@@ -40,15 +40,17 @@ export default function index() {
     })
   }
 
-  async function getInfoFromText(text) {
-    if (text === "") return;
+  async function getInfoFromText(extractText) {
+    if (extractText === "") return;
+
+    console.log(typeof extractText, extractText)
 
     const response = await fetch("http://localhost:3030/api/getInfo", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ text }),
+      body: extractText,
     });
 
     const data = await response.json();
