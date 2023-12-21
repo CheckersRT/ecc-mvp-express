@@ -23,9 +23,10 @@ export default function index() {
       body: image
     }).then(() => {
       console.log("image upload successful")
-      }).catch(error => {
-        console.log(error)
-      });
+      extractText();
+    }).catch(error => {
+      console.log(error)
+    });
   }
 
   function extractText() {
