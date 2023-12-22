@@ -17,13 +17,16 @@ export default function index() {
   }, [imagedSavedIsTrue]);
 
   useEffect(() => {
-    console.log("text from useEffect: ", text);
-    getInfoFromText(text);
+    if(text !== "") {
+      console.log("text from useEffect: ", text);
+      setOutput("...doing AI...")
+      getInfoFromText(text);
+    }
   }, [text]);
 
   async function saveImage(event) {
     event.preventDefault();
-
+    setOutput("...extracting text...")
     try {
       const response = await fetch("http://localhost:3030/api/save", {
         method: "POST",
@@ -53,9 +56,10 @@ export default function index() {
   }
 
   async function getInfoFromText(text) {
-    if (text === "") return;
+    event.preventDefault()
+    // if (text === "") return;
 
-    console.log(typeof text);
+    // console.log(typeof text);
 
     const response = await fetch("http://localhost:3030/api/getInfo")
 
@@ -66,10 +70,14 @@ export default function index() {
     console.log("OpenAI replied...", output);
     setOutput(output);
   }
+  console.log(output.Composer)
 
   return (
     <>
-      <form onSubmit={saveImage}>
+      <form 
+      // onSubmit={saveImage}
+      onSubmit={getInfoFromText}
+      >
         <input
           type="file"
           name="image"
