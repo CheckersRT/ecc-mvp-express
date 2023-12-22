@@ -17,20 +17,40 @@ export default function index() {
     getInfoFromText(text);
   }, [text]);
 
-  function saveImage(event) {
+  // function saveImage(event) {
+  //   event.preventDefault();
+
+  //   fetch("http://localhost:3030/api/save", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "image/jpeg"
+  //     },
+  //     body: image
+  //   }).then(() => {
+  //     console.log("Image uploaded successfully!")
+  //   }).catch(error => {
+  //     console.log(error);
+  //   });
+  // }
+
+  async function saveImage(event) {
     event.preventDefault();
 
-    fetch("http://localhost:3030/api/save", {
-      method: "POST",
-      headers: {
-        "Content-Type": "image/jpeg"
-      },
-      body: image
-    }).then(() => {
-      console.log("Image uploaded successfully!")
-    }).catch(error => {
-      console.log(error);
-    });
+    try {
+      const response = await fetch("http://localhost:3030/api/save", {
+        method: "POST",
+        headers: {
+          "Content-Type": "image/jpeg"
+        },
+        body: image
+      })
+      // if (response.ok) console.log("Image uploaded successfully!")
+      const data = await response.json()
+      console.log("Message from server: ", data)
+
+    } catch (error) {
+      console.log("Error with save: ", error)
+    }
   }
 
 
