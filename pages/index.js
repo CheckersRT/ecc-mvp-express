@@ -3,35 +3,22 @@ import React, { useState, useEffect } from "react";
 export default function index() {
   // const [message, setMessage] = useState("Loading");
   const [image, setImage] = useState();
+  const [imageSaved, setImageSaved] = useState(false);
   const [text, setText] = useState("");
   const [output, setOutput] = useState("");
 
-  
+  const imagedSavedIsTrue = imageSaved === true
   useEffect(() => {
-    console.log("image from useEffect: ", image);
-    // extractText();
-  }, [image]);
+    if(imagedSavedIsTrue) {
+      console.log("useEffect is running with this image: ", image)
+      extractText()
+    }
+  }, [imagedSavedIsTrue]);
     
   useEffect(() => {
     console.log("text from useEffect: ", text);
     getInfoFromText(text);
   }, [text]);
-
-  // function saveImage(event) {
-  //   event.preventDefault();
-
-  //   fetch("http://localhost:3030/api/save", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "image/jpeg"
-  //     },
-  //     body: image
-  //   }).then(() => {
-  //     console.log("Image uploaded successfully!")
-  //   }).catch(error => {
-  //     console.log(error);
-  //   });
-  // }
 
   async function saveImage(event) {
     event.preventDefault();
@@ -44,15 +31,14 @@ export default function index() {
         },
         body: image
       })
-      // if (response.ok) console.log("Image uploaded successfully!")
       const data = await response.json()
       console.log("Message from server: ", data)
+      setImageSaved(true)
 
     } catch (error) {
       console.log("Error with save: ", error)
     }
   }
-
 
   async function extractText() {
     const response = await fetch("http://localhost:3030/api/extract")
@@ -62,7 +48,6 @@ export default function index() {
         setText(data.text);
       });
     }
-    console.log("TExt: ", text)
 
   async function getInfoFromText(text) {
     if (text === "") return;
