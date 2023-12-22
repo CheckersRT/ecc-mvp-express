@@ -1,52 +1,38 @@
 import React, { useState, useEffect } from "react";
 
 export default function index() {
-  const [message, setMessage] = useState("Loading");
+  // const [message, setMessage] = useState("Loading");
   const [image, setImage] = useState();
   const [text, setText] = useState("");
   const [output, setOutput] = useState("");
 
   
-
   useEffect(() => {
     console.log("image from useEffect: ", image);
     // extractText();
   }, [image]);
-
+    
   useEffect(() => {
     console.log("text from useEffect: ", text);
     getInfoFromText(text);
   }, [text]);
 
-  async function sendImage(event) {
+  function saveImage(event) {
     event.preventDefault();
-      
-    const file = event.target.elements.image.files[0]
-    console.log(file)
-    // const formData = new FormData();
-    // console.log("formData: ", formData)
-    // formData.append("image", file);
 
-    try {
-      const response = await fetch("http://localhost:3030/api/save", {
-        method: "POST",
-        headers: {
-          "Content-type": "image/jpeg",
-        },
-        body: image,
-      })
-      if (!response.ok) {
-        throw new Error("Image upload failed");
-      }      
-        console.log("image upload successful");
-        const data = response.json()
-        const {message} = data
-        console.log(data, message)
-        setImage(file);
-    } catch (error) {
-      console.error(error);
-    }
+    fetch("http://localhost:3030/api/save", {
+      method: "POST",
+      headers: {
+        "Content-Type": "image/jpeg"
+      },
+      body: image
+    }).then(() => {
+      console.log("Image uploaded successfully!")
+    }).catch(error => {
+      console.log(error);
+    });
   }
+
 
   async function extractText() {
     const response = await fetch("http://localhost:3030/api/extract")
@@ -80,12 +66,11 @@ export default function index() {
 
   return (
     <>
-      <p>{message}</p>
-      <form onSubmit={sendImage}>
+      <form onSubmit={saveImage}>
         <input
           type="file"
           name="image"
-          // onChange={(event) => setImage(event.target.files[0])}
+          onChange={(event) => setImage(event.target.files[0])}
         ></input>
         <button type="submit">Submit</button>
       </form>
