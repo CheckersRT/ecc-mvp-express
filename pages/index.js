@@ -6,9 +6,11 @@ export default function index() {
   const [text, setText] = useState("");
   const [output, setOutput] = useState("");
 
+  
+
   useEffect(() => {
     console.log("image from useEffect: ", image);
-    extractText();
+    // extractText();
   }, [image]);
 
   useEffect(() => {
@@ -16,22 +18,34 @@ export default function index() {
     getInfoFromText(text);
   }, [text]);
 
-  function sendImage(event) {
+  async function sendImage(event) {
     event.preventDefault();
-    const response = fetch("http://localhost:3030/api/save", {
-      method: "POST",
-      headers: {
-        "Content-type": "image/jpeg",
-      },
-      body: image,
-    })
-      .then(() => {
-        console.log("image upload successful");
-        setImage(image);
+      
+    const file = event.target.elements.image.files[0]
+    console.log(file)
+    // const formData = new FormData();
+    // console.log("formData: ", formData)
+    // formData.append("image", file);
+
+    try {
+      const response = await fetch("http://localhost:3030/api/save", {
+        method: "POST",
+        headers: {
+          "Content-type": "image/jpeg",
+        },
+        body: image,
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      if (!response.ok) {
+        throw new Error("Image upload failed");
+      }      
+        console.log("image upload successful");
+        const data = response.json()
+        const {message} = data
+        console.log(data, message)
+        setImage(file);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async function extractText() {
@@ -71,7 +85,7 @@ export default function index() {
         <input
           type="file"
           name="image"
-          onChange={(event) => setImage(event.target.files[0])}
+          // onChange={(event) => setImage(event.target.files[0])}
         ></input>
         <button type="submit">Submit</button>
       </form>
