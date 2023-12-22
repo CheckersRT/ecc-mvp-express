@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 
 export default function index() {
-  // const [message, setMessage] = useState("Loading");
   const [image, setImage] = useState();
   const [imageSaved, setImageSaved] = useState(false);
+  const [loading, setLoading] = useState("")
   const [text, setText] = useState("");
-  const [output, setOutput] = useState("");
+  const [output, setOutput] = useState({
+    songTitle: "",
+    composer: "",
+    musicPublisher: "",
+  });
 
   const imagedSavedIsTrue = imageSaved === true;
   useEffect(() => {
@@ -19,24 +23,26 @@ export default function index() {
   useEffect(() => {
     if(text !== "") {
       console.log("text from useEffect: ", text);
-      setOutput("...doing AI...")
+      setLoading("...doing AI...")
       getInfoFromText(text);
     }
   }, [text]);
 
   async function saveImage(event) {
     event.preventDefault();
-    setOutput("...extracting text...")
+    // setOutput("...extracting text...")
+    console.log(event.target.elements.image.files[0].type)
+    const contentType = event.target.elements.image.files[0].type
     try {
       const response = await fetch("http://localhost:3030/api/save", {
         method: "POST",
         headers: {
-          "Content-Type": "image/jpeg",
+          "Content-Type": contentType,
         },
         body: image,
       });
       const data = await response.json();
-      console.log("Message from server: ", data);
+      console.log("Message from server: ", data.message);
       setImageSaved(true);
     } catch (error) {
       console.log("Error from saveImage: ", error);
@@ -56,27 +62,27 @@ export default function index() {
   }
 
   async function getInfoFromText(text) {
-    event.preventDefault()
-    // if (text === "") return;
+    // event.preventDefault()
+    if (text === "") return;
 
-    // console.log(typeof text);
+    console.log(typeof text);
 
     const response = await fetch("http://localhost:3030/api/getInfo")
 
     console.log(response)
 
     const data = await response.json();
+    console.log(data)
     const { output } = data;
     console.log("OpenAI replied...", output);
     setOutput(output);
   }
-  console.log(output.Composer)
 
   return (
     <>
       <form 
-      // onSubmit={saveImage}
-      onSubmit={getInfoFromText}
+      onSubmit={saveImage}
+      // onSubmit={getInfoFromText}
       >
         <input
           type="file"
@@ -86,7 +92,11 @@ export default function index() {
         <button type="submit">Submit</button>
       </form>
       <p>{text ? text : null}</p>
-      <p>{output ? output : null}</p>
-    </>
+      <div>
+        <p>Song Title: {output.songTitle}</p>
+        <p>Composer: {output.composer}</p>
+        <p>Music Publisher: {output.musicPublisher}</p>
+      </div> 
+      </>
   );
 }
