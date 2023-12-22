@@ -15,7 +15,7 @@ export default function index() {
   useEffect(() => {
     if (imagedSavedIsTrue) {
       console.log("useEffect is running with this image: ", image);
-      extractText();
+      extractText(image);
     }
     return () => setImageSaved(false)
   }, [imagedSavedIsTrue]);
@@ -49,9 +49,11 @@ export default function index() {
     }
   }
 
-  async function extractText() {
+  async function extractText(image) {
+    console.log("image in extractText function: ", image)
+    const contentType = image.type
     try {
-      const response = await fetch("http://localhost:3030/api/extract");
+      const response = await fetch(`http://localhost:3030/api/extract${contentType === "application/pdf" ? "Pdf" : ""}`);
       const data = await response.json();
       console.log("Response data: ", data.text);
       setText(data.text);
