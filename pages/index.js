@@ -7,14 +7,14 @@ export default function index() {
   const [text, setText] = useState("");
   const [output, setOutput] = useState("");
 
-  const imagedSavedIsTrue = imageSaved === true
+  const imagedSavedIsTrue = imageSaved === true;
   useEffect(() => {
-    if(imagedSavedIsTrue) {
-      console.log("useEffect is running with this image: ", image)
-      extractText()
+    if (imagedSavedIsTrue) {
+      console.log("useEffect is running with this image: ", image);
+      extractText();
     }
   }, [imagedSavedIsTrue]);
-    
+
   useEffect(() => {
     console.log("text from useEffect: ", text);
     getInfoFromText(text);
@@ -27,27 +27,24 @@ export default function index() {
       const response = await fetch("http://localhost:3030/api/save", {
         method: "POST",
         headers: {
-          "Content-Type": "image/jpeg"
+          "Content-Type": "image/jpeg",
         },
-        body: image
-      })
-      const data = await response.json()
-      console.log("Message from server: ", data)
-      setImageSaved(true)
-
+        body: image,
+      });
+      const data = await response.json();
+      console.log("Message from server: ", data);
+      setImageSaved(true);
     } catch (error) {
-      console.log("Error with save: ", error)
+      console.log("Error with save: ", error);
     }
   }
 
   async function extractText() {
-    const response = await fetch("http://localhost:3030/api/extract")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Response data: ", data.text);
-        setText(data.text);
-      });
-    }
+    const response = await fetch("http://localhost:3030/api/extract");
+    const data = await response.json();
+    console.log("Response data: ", data.text);
+    setText(data.text);
+  }
 
   async function getInfoFromText(text) {
     if (text === "") return;
@@ -67,7 +64,6 @@ export default function index() {
     console.log("OpenAI replied...", output);
     setOutput(output);
   }
-
 
   return (
     <>
