@@ -91,7 +91,7 @@ export default function index() {
         ></input>
         <button type="submit">Submit</button>
       </form>
-      <p>{text ? text : null}</p>
+      {/* <p>{text ? text : null}</p> */}
       <div>
         <p>Song Title: {output.songTitle}</p>
         <p>Composer: {output.composer}</p>
