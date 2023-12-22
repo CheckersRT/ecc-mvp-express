@@ -13,6 +13,7 @@ export default function index() {
       console.log("useEffect is running with this image: ", image);
       extractText();
     }
+    return () => setImageSaved(false)
   }, [imagedSavedIsTrue]);
 
   useEffect(() => {
@@ -35,29 +36,30 @@ export default function index() {
       console.log("Message from server: ", data);
       setImageSaved(true);
     } catch (error) {
-      console.log("Error with save: ", error);
+      console.log("Error from saveImage: ", error);
     }
   }
 
   async function extractText() {
-    const response = await fetch("http://localhost:3030/api/extract");
-    const data = await response.json();
-    console.log("Response data: ", data.text);
-    setText(data.text);
+    try {
+      const response = await fetch("http://localhost:3030/api/extract");
+      const data = await response.json();
+      console.log("Response data: ", data.text);
+      setText(data.text);
+      
+    } catch (error) {
+      console.log("Error from extractText: ", error)
+    }
   }
 
   async function getInfoFromText(text) {
     if (text === "") return;
 
-    console.log(typeof text, text);
+    console.log(typeof text);
 
-    const response = await fetch("http://localhost:3030/api/getInfo", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ text }),
-    });
+    const response = await fetch("http://localhost:3030/api/getInfo")
+
+    console.log(response)
 
     const data = await response.json();
     const { output } = data;
