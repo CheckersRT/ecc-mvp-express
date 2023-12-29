@@ -17,7 +17,6 @@ app.use(cors());
 const client = new v1.ImageAnnotatorClient();
 
 const openai = new OpenAI({
-//   apiKey: "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",
   Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
 });
 
