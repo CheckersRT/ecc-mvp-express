@@ -1,0 +1,6 @@
+
+const sample = { 
+    sample: "6 3 9 12 Bbmaj7 F Moderately slow mf 24 F dip Fmaj7 Am7 bet your bot - tom dol- lar Bbmaj7/F that dip to - TOMORROW Words by Martin Charnin Music by Charles Strouse Fmaj7 SS Dm morrow. Gm7add4 Bbmaj7/F dip Dm/C q there'll be F The sun-'ll come out. Bbmaj7 sun! toto Chappell Morris Ltd and Warner/Chappell North America Ltd 1978 Edwin H Morris & Co Inc and Charles Strouse Publishing administered by WB Music Corp All Rights Reserved. Gm7add4 C Fmaj7 to-mor-row, Jus',6,3,9,12,Bbmaj7,F,Moderately,slow,mf,24,F,dip,Fmaj7,Am7,bet,your,bot,-,tom,dol-,lar,Bbmaj7,/,F,that,dip,to,-,TOMORROW,Words,by,Martin,Charnin,Music,by,Charles,Strouse,Fmaj7,SS,Dm,morrow,.,Gm7add4,Bbmaj7,/,F,dip,Dm,/,C,q,there'll,be,F,The,sun,-,',ll,come,out,.,Bbmaj7,sun,!,toto,Chappell,Morris,Ltd,and,Warner,/,Chappell,North,America,Ltd,1978,Edwin,H,Morris,&,Co,Inc,and,Charles,Strouse,Publishing,administered,by,WB,Music,Corp,All,Rights,Reserved,.,Gm7add4,C,Fmaj7,to,-,mor,-,row,,,Jus,"
+}
+
+export default sample;
