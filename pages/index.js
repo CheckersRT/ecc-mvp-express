@@ -1,96 +1,104 @@
 import React, { useState, useEffect } from "react";
 
 export default function index() {
-  const [message, setMessage] = useState("Loading");
   const [image, setImage] = useState();
+  const [imageSaved, setImageSaved] = useState(false);
+  const [loading, setLoading] = useState("")
   const [text, setText] = useState("");
-  const [output, setOutput] = useState("");
+  const [output, setOutput] = useState({
+    songTitle: "",
+    composer: "",
+    musicPublisher: "",
+  });
 
-  
+  const imagedSavedIsTrue = imageSaved === true;
+  useEffect(() => {
+    if (imagedSavedIsTrue) {
+      console.log("useEffect is running with this image: ", image);
+      extractText(image);
+    }
+    return () => setImageSaved(false)
+  }, [imagedSavedIsTrue]);
 
   useEffect(() => {
-    console.log("image from useEffect: ", image);
-    // extractText();
-  }, [image]);
-
-  useEffect(() => {
-    console.log("text from useEffect: ", text);
-    getInfoFromText(text);
+    if(text !== "") {
+      console.log("text from useEffect: ", text);
+      setLoading("...doing AI...")
+      getInfoFromText(text);
+    }
   }, [text]);
 
-  async function sendImage(event) {
+  async function saveImage(event) {
     event.preventDefault();
-      
-    const file = event.target.elements.image.files[0]
-    console.log(file)
-    // const formData = new FormData();
-    // console.log("formData: ", formData)
-    // formData.append("image", file);
-
+    // setOutput("...extracting text...")
+    console.log(event.target.elements.image.files[0].type)
+    const contentType = event.target.elements.image.files[0].type
     try {
       const response = await fetch("http://localhost:3030/api/save", {
         method: "POST",
         headers: {
-          "Content-type": "image/jpeg",
+          "Content-Type": contentType,
         },
         body: image,
-      })
-      if (!response.ok) {
-        throw new Error("Image upload failed");
-      }      
-        console.log("image upload successful");
-        const data = response.json()
-        const {message} = data
-        console.log(data, message)
-        setImage(file);
+      });
+      const data = await response.json();
+      console.log("Message from server: ", data.message);
+      setImageSaved(true);
     } catch (error) {
-      console.error(error);
+      console.log("Error from saveImage: ", error);
     }
   }
 
-  async function extractText() {
-    const response = await fetch("http://localhost:3030/api/extract")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Response data: ", data.text);
-        setText(data.text);
-      });
+  async function extractText(image) {
+    console.log("image in extractText function: ", image)
+    const contentType = image.type
+    try {
+      const response = await fetch(`http://localhost:3030/api/extract${contentType === "application/pdf" ? "Pdf" : ""}`);
+      const data = await response.json();
+      console.log("Response data: ", data.text);
+      setText(data.text);
+      
+    } catch (error) {
+      console.log("Error from extractText: ", error)
     }
-    console.log("TExt: ", text)
+  }
 
   async function getInfoFromText(text) {
+    // event.preventDefault()
     if (text === "") return;
 
-    console.log(typeof text, text);
+    console.log(typeof text);
 
-    const response = await fetch("http://localhost:3030/api/getInfo", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ text }),
-    });
+    const response = await fetch("http://localhost:3030/api/getInfo")
+
+    console.log(response)
 
     const data = await response.json();
+    console.log(data)
     const { output } = data;
     console.log("OpenAI replied...", output);
     setOutput(output);
   }
 
-
   return (
     <>
-      <p>{message}</p>
-      <form onSubmit={sendImage}>
+      <form 
+      onSubmit={saveImage}
+      // onSubmit={getInfoFromText}
+      >
         <input
           type="file"
           name="image"
-          // onChange={(event) => setImage(event.target.files[0])}
+          onChange={(event) => setImage(event.target.files[0])}
         ></input>
         <button type="submit">Submit</button>
       </form>
-      <p>{text ? text : null}</p>
-      <p>{output ? output : null}</p>
-    </>
+      {/* <p>{text ? text : null}</p> */}
+      <div>
+        <p>Song Title: {output.songTitle}</p>
+        <p>Composer: {output.composer}</p>
+        <p>Music Publisher: {output.musicPublisher}</p>
+      </div> 
+      </>
   );
 }
