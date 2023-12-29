@@ -51,6 +51,7 @@ export default function index() {
 
   async function extractText(image) {
     console.log("image in extractText function: ", image)
+    setLoading("...extracting text...")
     const contentType = image.type
     try {
       const response = await fetch(`http://localhost:3030/api/extract${contentType === "application/pdf" ? "Pdf" : ""}`);
@@ -73,6 +74,8 @@ export default function index() {
 
     console.log(response)
 
+    if (response.ok) setLoading("done!")
+
     const data = await response.json();
     console.log(data)
     const { output } = data;
@@ -94,6 +97,9 @@ export default function index() {
         <button type="submit">Submit</button>
       </form>
       {/* <p>{text ? text : null}</p> */}
+      <br></br>
+      {setLoading !== "" ? <p>{loading}</p> : null}
+      <br></br>
       <div>
         <p>Song Title: {output.songTitle}</p>
         <p>Composer: {output.composer}</p>
