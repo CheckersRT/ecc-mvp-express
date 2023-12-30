@@ -6,7 +6,6 @@ import bodyParser from "body-parser";
 import OpenAI from "openai";
 import sample from "/Users/Checkers/Documents/spiced/ecc-app/ecc-mvp-with-express-server/server/sampleText.js";
 
-// console.log(sample)
 
 const app = express();
 const PORT = process.env.PORT || 3030;
